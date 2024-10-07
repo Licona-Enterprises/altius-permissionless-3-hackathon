@@ -1,10 +1,6 @@
-# Project Name
+# Deployed Contract Addresses
 
-A brief description of the project. Explain the purpose of the contract and how it's used in the project.
-
-## Deployed Contract Addresses
-
-This section contains the addresses where the contract is deployed on various blockchain networks. 
+This section contains the addresses where the TokenTransferor_v1 contract is deployed on various blockchain networks. 
 
 | Network    | Contract Address                                    | Explorer Link                                     |
 |------------|------------------------------------------------------|---------------------------------------------------|
@@ -12,38 +8,107 @@ This section contains the addresses where the contract is deployed on various bl
 | Arbitrum Sepolia | `0x8ee3F523490459d2c424e7b8aD25C5CFb66FA1Ac`                   | [View on Arbscan](https://sepolia.arbiscan.io/address/0x8ee3F523490459d2c424e7b8aD25C5CFb66FA1Ac) |
 | Avalanche Fuji  | `0x67E93C4b89Dd330d7b8B9f6D455210AEA5605CE1`                     | [View on Avascan](https://testnet.avascan.info/blockchain/all/address/0x67E93C4b89Dd330d7b8B9f6D455210AEA5605CE1) |
 
-## Contract ABI
+Here is the updated README that includes the supported assets and the updated function signature for `transferTokensPayNative`, as well as the destination chain selectors.
 
-Include a link or instructions for retrieving the contract ABI if applicable.
+# Cross-Chain ERC20 Token Transfer Contracts
 
-- **ABI**: [Contract ABI File](./path/to/your/ABI.json)
+## Overview
 
-## Interacting with the Contract
+This project consists of smart contracts deployed across multiple networks to enable seamless cross-chain transfers of ERC20 tokens. Each contract allows users to send ERC20 tokens to any address across the following supported networks:
 
-You can interact with the contract on each network using any Ethereum-compatible wallet or Web3 provider. Popular methods include:
+- **Avalanche Fuji Testnet**
+- **Ethereum Sepolia Testnet**
+- **Arbitrum Sepolia Testnet**
 
-- **Etherscan/BscScan/PolygonScan:** You can use the network’s block explorer to interact directly with the contract using the contract's read/write interface.
-- **Web3 Tools:** Use a Web3 library (e.g., ethers.js, web3.js) or dApp frontend to call contract functions.
+### Deployed Contracts
 
-## Usage
+| Network           | Contract Address                                    | Allowlisted Networks                        | Supported Assets                          |
+|-------------------|-----------------------------------------------------|---------------------------------------------|-------------------------------------------|
+| Avalanche Fuji     | `0x67E93C4b89Dd330d7b8B9f6D455210AEA5605CE1`        | Ethereum Sepolia, Arbitrum Sepolia          | USDC: `0x5425890298aed601595a70AB815c96711a31Bc65` |
+| Ethereum Sepolia   | `0x689688cA66D3357Ab096E205Ea9C8B094366890d`        | Avalanche Fuji, Arbitrum Sepolia            | USDC: `0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238` |
+| Arbitrum Sepolia   | `0x8ee3F523490459d2c424e7b8aD25C5CFb66FA1Ac`        | Avalanche Fuji, Ethereum Sepolia            | USDC: `0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d`  |
 
-Describe how to use the contract or any dApp frontends that interact with it. You can include example code snippets or instructions for interacting with the contract on different networks.
+### Supported Chains and Selectors
 
-```js
-// Example for interacting with the contract using ethers.js
-const contractAddress = "0xYourContractAddress";
-const contractABI = [ /* ABI Array Here */ ];
+To perform cross-chain token transfers, the following destination chain selectors can be used to identify the network to which tokens will be sent:
 
-const provider = ethers.getDefaultProvider('networkName');
-const contract = new ethers.Contract(contractAddress, contractABI, provider);
+| Chain             | Selector ID                   |
+|-------------------|-------------------------------|
+| Avalanche Fuji     | `14767482510784806043`        |
+| Ethereum Sepolia   | `16015286601757825753`        |
+| Arbitrum Sepolia   | `3478487238524512106`         |
+
+### Features
+
+- **Cross-Chain Transfers:** These contracts allow users to send ERC20 tokens from one chain to another by leveraging allowlisted networks. Each contract has been configured to support seamless transfers between the deployed networks.
+  
+- **Permissioned Transfers:** The contract has a permissioned mechanism to ensure that only allowlisted chains can interact with the deployed contracts for token transfers.
+
+- **Supported Assets:** Each network supports the transfer of USDC tokens, with the contract able to send tokens between chains listed in the allowlist.
+
+### Usage
+
+#### Sending ERC20 Tokens to a Cross-Chain Address
+
+To send ERC20 tokens across different chains, you can use the `transferTokensPayNative` function. This function initiates the transfer of tokens from the current network to a designated address on an allowlisted network, specifying the destination chain, the receiver, and the amount.
+
+Here is the function signature:
+```solidity
+function transferTokensPayNative(
+    uint64 _destinationChainSelector, 
+    address _receiver, 
+    address _token, 
+    uint256 _amount
+) external payable;
 ```
 
-## Additional Resources
+Here’s an example using Ethers.js:
 
-- [Documentation](link-to-docs)
-- [How to Deploy the Contract](link-to-deployment-guide)
-- [Whitepaper](link-to-whitepaper)
+```javascript
+const { ethers } = require('ethers');
 
----
+// Replace with appropriate values
+const CONTRACT_ADDRESS = 'YOUR_CONTRACT_ADDRESS_HERE';
+const DESTINATION_CHAIN_SELECTOR = 14767482510784806043; // Example: Avalanche Fuji
+const RECIPIENT_ADDRESS = 'RECIPIENT_ADDRESS_ON_OTHER_CHAIN';
+const TOKEN_ADDRESS = 'USDC_TOKEN_ADDRESS_ON_CURRENT_CHAIN'; // Use the supported USDC token address
+const TOKEN_AMOUNT = ethers.utils.parseUnits('100', 6); // Example: 100 USDC tokens (with 6 decimals)
 
-Feel free to customize this README as needed, especially the **Network** and **Contract Address** sections, depending on where your contracts are deployed. Let me know if you want any additional sections!
+// Contract ABI
+const abi = [
+  "function transferTokensPayNative(uint64 _destinationChainSelector, address _receiver, address _token, uint256 _amount) external payable"
+];
+
+// Provider and Signer
+const provider = new ethers.providers.JsonRpcProvider('YOUR_RPC_PROVIDER');
+const signer = provider.getSigner(); // Replace with wallet or private key signer
+
+// Instantiate contract
+const contract = new ethers.Contract(CONTRACT_ADDRESS, abi, signer);
+
+async function transferTokens() {
+  try {
+    const tx = await contract.transferTokensPayNative(
+      DESTINATION_CHAIN_SELECTOR,
+      RECIPIENT_ADDRESS,
+      TOKEN_ADDRESS,
+      TOKEN_AMOUNT,
+      { value: ethers.utils.parseEther('0.01') } // Native token fee (e.g., ETH/AVAX)
+    );
+    console.log('Transaction sent:', tx.hash);
+    await tx.wait();
+    console.log('Transaction confirmed!');
+  } catch (err) {
+    console.error('Error during transfer:', err);
+  }
+}
+
+transferTokens();
+```
+
+### Requirements
+
+- Solidity ^0.8.x
+- Hardhat
+- Ethers.js
+
