@@ -11,7 +11,7 @@ This section contains the addresses where the contract is deployed on various bl
 | Ethereum   | `0xYourEthereumContractAddress`                      | [View on Etherscan](https://etherscan.io/address/0xYourEthereumContractAddress) |
 | Binance Smart Chain (BSC) | `0xYourBSCContractAddress`                   | [View on BscScan](https://bscscan.com/address/0xYourBSCContractAddress) |
 | Polygon    | `0xYourPolygonContractAddress`                       | [View on PolygonScan](https://polygonscan.com/address/0xYourPolygonContractAddress) |
-| Avalanche  | `0xYourAvalancheContractAddress`                     | [View on SnowTrace](https://snowtrace.io/address/0xYourAvalancheContractAddress) |
+| Avalanche  | `0x67E93C4b89Dd330d7b8B9f6D455210AEA5605CE1`                     | [View on Avascan](https://testnet.avascan.info/blockchain/all/address/0x67E93C4b89Dd330d7b8B9f6D455210AEA5605CE1) |
 | Fantom     | `0xYourFantomContractAddress`                        | [View on FtmScan](https://ftmscan.com/address/0xYourFantomContractAddress) |
 
 ## Contract ABI
