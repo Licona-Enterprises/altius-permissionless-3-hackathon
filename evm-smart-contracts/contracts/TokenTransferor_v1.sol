@@ -8,7 +8,7 @@ import {IERC20} from "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-sol
 import {SafeERC20} from "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-solidity/v4.8.3/contracts/token/ERC20/utils/SafeERC20.sol";
 
 /// @title - A simple contract for transferring tokens across chains.
-contract TokenTransferor is OwnerIsCreator {
+contract TokenTransferor_v1 is OwnerIsCreator {
     using SafeERC20 for IERC20;
 
     // Custom errors to provide more descriptive revert messages.
@@ -180,7 +180,7 @@ contract TokenTransferor is OwnerIsCreator {
         IERC20(_token).approve(address(s_router), _amount);
 
         // Send the message through the router and store the returned message ID
-        messageId = s_router.ccipSend{value: fees}(
+        messageId = s_router.ccipSend{value: fees, gas: 500000}(
             _destinationChainSelector,
             evm2AnyMessage
         );

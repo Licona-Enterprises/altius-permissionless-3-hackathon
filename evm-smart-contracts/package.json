@@ -4,6 +4,8 @@
   "main": "index.js",
   "scripts": {
     "compile": "npx hardhat compile",
+    "start": "npx hardhat node",
+    "deploy": "npx hardhat run scripts/TokenTransferor_v1.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
