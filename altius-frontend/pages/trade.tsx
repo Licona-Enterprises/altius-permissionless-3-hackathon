@@ -1,9 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { TransactionButton } from "thirdweb/react";
 import { getContract } from "thirdweb";
-import { avalanche, ethereum, bsc, polygon, arbitrum } from "thirdweb/chains";
+import { avalanche, arbitrum, ethereum, bsc, polygon, avalancheFuji } from "thirdweb/chains";
 import { createThirdwebClient, prepareContractCall } from "thirdweb";
+import { toWei } from "thirdweb/utils";
 import ChainSelector from '../components/ChainSelector';
 import TokenSelector from '../components/TokenSelector';
 
@@ -19,13 +20,17 @@ type TradeFormData = {
 };
 
 export default function Trade() {
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm<TradeFormData>();
-  const [formData, setFormData] = useState<TradeFormData | null>(null);
+  const { register, handleSubmit, formState: { errors } } = useForm<TradeFormData>();
+  const [formData, setFormData] = useState<TradeFormData>({
+    destinationChainSelector: '16015286601757825753', // Default destination chain selector
+    receiver: '',
+    token: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // Default to USDC
+    amount: ''
+  });
   const [destinationChain, setDestinationChain] = useState('ethereum');
-  const [selectedToken, setSelectedToken] = useState('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'); // USDC address as default
+  const [selectedToken, setSelectedToken] = useState('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'); // Default to USDC
 
-  // Use useMemo to derive chainToUse and contractAddress from destinationChain
-  const { chainToUse, contractAddress } = useMemo(() => {
+  const { chainToUse, contractAddress, destinationChainSelector, token } = useMemo(() => {
     switch (destinationChain) {
       case 'ethereum':
         return {
@@ -43,25 +48,10 @@ export default function Trade() {
         };
       case 'avalanche':
         return {
-          chainToUse: avalanche,
+          chainToUse: avalancheFuji,
           contractAddress: '0x67E93C4b89Dd330d7b8B9f6D455210AEA5605CE1',
           destinationChainSelector: '14767482510784806043',
           token: '0x5425890298aed601595a70AB815c96711a31Bc65'
-        };
-
-      case 'binance':
-        return {
-          chainToUse: bsc,
-          contractAddress: '',
-          destinationChainSelector: 0,
-          token: ''
-        };
-      case 'polygon':
-        return {
-          chainToUse: polygon,
-          contractAddress:'0xYourPolygonContractAddress',
-          destinationChainSelector: 0,
-          token: ''
         };
       default:
         return {
@@ -73,25 +63,28 @@ export default function Trade() {
     }
   }, [destinationChain]);
 
-  const onSubmit = (data: TradeFormData) => {
-    setFormData({ ...data, token: selectedToken });
-    console.log('Form data:', { ...data, token: selectedToken });
-  };
+  useEffect(() => {
+    setFormData(fData => ({
+      ...fData,
+      destinationChainSelector,
+      token: token // This updates token in formData as well
+    }));
+  }, [destinationChain, destinationChainSelector, token]);
 
-  // Update the token value when it changes
-  const handleTokenChange = (value: string) => {
-    setSelectedToken(value);
-    setValue('token', value);
+  const handleInputChange = (field: keyof TradeFormData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (field === 'token') {
+      setSelectedToken(value);
+    }
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Trade</h1>
       <div className="flex flex-wrap -mx-4">
-        {/* Left half: Transaction Builder */}
         <div className="w-full md:w-1/2 px-4 mb-8 md:mb-0">
           <h2 className="text-2xl font-bold mb-4">Transaction Builder</h2>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form className="space-y-4">
             <div>
               <label htmlFor="destinationChainSelector" className="block mb-1">Destination Chain Selector</label>
               <ChainSelector value={destinationChain} onChange={setDestinationChain} />
@@ -103,7 +96,8 @@ export default function Trade() {
               <input
                 type="text"
                 id="receiver"
-                {...register("receiver", { required: "This field is required" })}
+                value={formData.receiver}
+                onChange={(e) => handleInputChange('receiver', e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded bg-gray-700 text-white"
               />
               {errors.receiver && <p className="text-red-500">{errors.receiver.message}</p>}
@@ -111,7 +105,11 @@ export default function Trade() {
 
             <div>
               <label htmlFor="token" className="block mb-1">Token</label>
-              <TokenSelector value={selectedToken} onChange={handleTokenChange} />
+              <TokenSelector
+                value={selectedToken}
+                onChange={(value) => handleInputChange('token', value)}
+              />
+              {errors.token && <p className="text-red-500">{errors.token.message}</p>}
             </div>
 
             <div>
@@ -119,7 +117,8 @@ export default function Trade() {
               <input
                 type="text"
                 id="amount"
-                {...register("amount", { required: "This field is required" })}
+                value={formData.amount}
+                onChange={(e) => handleInputChange('amount', e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded bg-gray-700 text-white"
               />
               {errors.amount && <p className="text-red-500">{errors.amount.message}</p>}
@@ -128,8 +127,9 @@ export default function Trade() {
 
           <div className="mt-4">
             <TransactionButton
-              transaction={() =>
-                prepareContractCall({
+              transaction={() => {
+                console.log("FORM DATA:", formData);
+                const tx = prepareContractCall({
                   contract: getContract({
                     client: thirdwebClient,
                     chain: chainToUse,
@@ -137,21 +137,29 @@ export default function Trade() {
                   }),
                   method: "function transferTokensPayNative(uint64 _destinationChainSelector, address _receiver, address _token, uint256 _amount)",
                   params: [
-                    BigInt(formData?.destinationChainSelector || 0),
-                    formData?.receiver || '',
-                    formData?.token || '',
-                    BigInt(0.01) // hard code as small amount for testing
+                    BigInt(destinationChainSelector),
+                    formData.receiver,
+                    formData.token,
+                    formData.amount ? toWei(formData.amount) : toWei('0.01') // Use form data or default
                   ]
-                })
-              }
-              payModal={false} // Disable the FIAT on-ramp dialogue (optional)
+                });
+                return tx;
+              }}
+              onTransactionSent={(result) => {
+                console.log("Transaction submitted", result);
+              }}
+              onTransactionConfirmed={(receipt) => {
+                console.log("Transaction confirmed", receipt);
+              }}
+              onError={(error) => {
+                console.error("Transaction error", error);
+              }}
             >
               Execute Transaction
             </TransactionButton>
           </div>
         </div>
 
-        {/* Right half: Submitted Data or other content */}
         <div className="w-full md:w-1/2 px-4">
           <h2 className="text-2xl font-bold mb-4">Transaction Details</h2>
           {formData ? (

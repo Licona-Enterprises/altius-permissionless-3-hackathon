@@ -1,6 +1,6 @@
 import { ConnectButton } from "thirdweb/react";
 import { createWallet } from "thirdweb/wallets";
-import { polygon, avalanche } from "thirdweb/chains";
+// import { polygon } from "thirdweb/chains";
 import { createThirdwebClient } from "thirdweb";
 
 export default function ConnectWallet() {
@@ -15,7 +15,7 @@ export default function ConnectWallet() {
               walletConfig: {
                 options: "smartWalletOnly",
               },
-              chains: [polygon, avalanche],
+              // chains: [polygon],
             }),
             createWallet("io.metamask", {
             }),
