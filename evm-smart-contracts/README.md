@@ -9,10 +9,8 @@ This section contains the addresses where the contract is deployed on various bl
 | Network    | Contract Address                                    | Explorer Link                                     |
 |------------|------------------------------------------------------|---------------------------------------------------|
 | Ethereum Sepolia   | `0x689688cA66D3357Ab096E205Ea9C8B094366890d`                      | [View on Etherscan](https://sepolia.etherscan.io/address/0x689688cA66D3357Ab096E205Ea9C8B094366890d) |
-| Binance Smart Chain (BSC) | `0xYourBSCContractAddress`                   | [View on BscScan](https://bscscan.com/address/0xYourBSCContractAddress) |
-| Polygon    | `0xYourPolygonContractAddress`                       | [View on PolygonScan](https://polygonscan.com/address/0xYourPolygonContractAddress) |
+| Arbitrum Sepolia | `0x8ee3F523490459d2c424e7b8aD25C5CFb66FA1Ac`                   | [View on Arbscan](https://sepolia.arbiscan.io/address/0x8ee3F523490459d2c424e7b8aD25C5CFb66FA1Ac) |
 | Avalanche Fuji  | `0x67E93C4b89Dd330d7b8B9f6D455210AEA5605CE1`                     | [View on Avascan](https://testnet.avascan.info/blockchain/all/address/0x67E93C4b89Dd330d7b8B9f6D455210AEA5605CE1) |
-| Fantom     | `0xYourFantomContractAddress`                        | [View on FtmScan](https://ftmscan.com/address/0xYourFantomContractAddress) |
 
 ## Contract ABI
 
