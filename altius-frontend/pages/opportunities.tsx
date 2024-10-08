@@ -328,13 +328,16 @@ export default function Opportunities() {
         {transactionStatus === 'success' && transactionData && (
           <div>
             <p className="text-green-500">Transaction Successful!</p>
-            <pre className="bg-gray-800 p-4 rounded">
-              Transaction Hash: <a href={`https://ccip.chain.link/msg/${transactionData.transactionHash}`} target="_blank" rel="noopener noreferrer">
-                {transactionData.transactionHash}
-              </a>
+            <pre className="bg-gray-800 p-4 rounded text-sm mb-4">
+              Transaction Hash: {transactionData.transactionHash.length > 39
+                                  ? `${transactionData.transactionHash.slice(0, 39)}...`
+                                  : transactionData.transactionHash}
               {'\n'}From: {transactionData.from}
               {'\n'}To: {transactionData.to}
             </pre>
+            <a href={`https://ccip.chain.link/tx/${transactionData.transactionHash}`} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">
+              View transaction on CCIP Explorer
+            </a>
           </div>
         )}
         {transactionStatus === 'error' && (
