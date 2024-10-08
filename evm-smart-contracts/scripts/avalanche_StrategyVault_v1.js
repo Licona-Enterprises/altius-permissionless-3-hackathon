@@ -2,8 +2,7 @@
 const { ethers } = require("hardhat");
 
 async function main() {
-  // Set up provider and wallet
-  // const provider = new ethers.providers.JsonRpcProvider('https://api.avax-test.network/ext/bc/C/rpc');
+
   const provider = ethers.JsonRpcApiProvider('https://api.avax-test.network/ext/bc/C/rpc');
 
   const privateKey = 'e072f4f2bb39293db7f29f3f7cb0e1654240d9730840bb8441ac33bfde030640'; // Use environment variable in production

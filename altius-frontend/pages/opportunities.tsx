@@ -27,6 +27,7 @@ type Opportunity = {
   chain: string;
   apy: number;
   strategy: string;
+  Icon: React.FC; // Add the Icon property
 };
 
 interface DataResponse {
