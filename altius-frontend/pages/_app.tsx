@@ -63,13 +63,10 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       </nav>
 
         {/* Page content */}
-        <Component {...pageProps} />
-
         <Provider value={ethClient}>
-          <Opportunities {...pageProps} /> {/* Component for Ethereum */}
+          <Component {...pageProps} /> {/* Component for Ethereum */}
         </Provider>
         
-
         {/* Footer */}
         <footer className="bg-gray-800 text-center p-4 mt-12">
           <p>&copy; 2024 Permissionless III hackathon</p>

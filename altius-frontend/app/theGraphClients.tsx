@@ -2,15 +2,6 @@ import { Provider } from 'urql';
 import { createClient, gql } from 'urql';
 import { cacheExchange, fetchExchange } from '@urql/core';
 
-// export const aave_rate_query = gql`
-//   reserves(where: { underlyingAsset: $underlyingAsset }) {
-//     name
-//     underlyingAsset
-//     liquidityRate
-//     variableBorrowRate
-//   }
-// `;
-
 export const aave_rate_query = gql`
 query GetReserves($underlyingAsset: String!) {
         reserves(where: { underlyingAsset: $underlyingAsset }) {
