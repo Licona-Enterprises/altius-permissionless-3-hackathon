@@ -4,7 +4,10 @@ import { AppProps } from 'next/app';
 import { Home, Globe, PieChart, Sliders, DollarSign } from 'lucide-react';
 import Link from 'next/link';
 import { ThirdwebProvider } from "thirdweb/react";
-import ConnectWallet from '../components/ConnectWallet'; // Make sure the path is correct
+import ConnectWallet from '../components/ConnectWallet';
+import { Provider } from 'urql';
+import { ethClient, avaxClient, arbitrumClient } from '../app/theGraphClients';
+import Opportunities from './opportunities';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
 
@@ -46,7 +49,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                 </nav>
 
                 {/* Page content */}
-                <Component {...pageProps} />
+                <Provider value={ethClient}>
+                  <Component {...pageProps} /> {/* Component for Ethereum */}
+                </Provider>
 
                 {/* Footer */}
                 <footer className="bg-gray-800 text-center p-4 mt-12">
