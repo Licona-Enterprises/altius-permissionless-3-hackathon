@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { TransactionButton } from "thirdweb/react";
 import { getContract } from "thirdweb";
-import { avalanche, arbitrum, ethereum, bsc, polygon, avalancheFuji } from "thirdweb/chains";
+import { avalanche, arbitrum, ethereum, sepolia, bsc, polygon, avalancheFuji } from "thirdweb/chains";
 import { createThirdwebClient, prepareContractCall } from "thirdweb";
 import { toWei } from "thirdweb/utils";
 import ChainSelector from '../components/ChainSelector';
@@ -24,18 +24,24 @@ export default function Trade() {
   const [formData, setFormData] = useState<TradeFormData>({
     destinationChainSelector: '16015286601757825753', // Default destination chain selector
     receiver: '',
-    token: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // Default to USDC
+    token: '0x0f4C966e4Da1f305C0E1078A0bF90caCc9703002', // Default to USDC
     amount: ''
   });
-  const [destinationChain, setDestinationChain] = useState('ethereum');
-  const [selectedToken, setSelectedToken] = useState('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'); // Default to USDC
+
+  const [sourceChain, setSourceChain] = useState('sepolia');
+  const [destinationChain, setDestinationChain] = useState('sepolia');
+  const [selectedToken, setSelectedToken] = useState('0x0f4C966e4Da1f305C0E1078A0bF90caCc9703002'); // Default to USDC
+
+  const [transactionStatus, setTransactionStatus] = useState('idle'); // 'idle', 'executing', 'success', 'error'
+  const [transactionData, setTransactionData] = useState(null);
+  const [transactionError, setTransactionError] = useState(null);
 
   const { chainToUse, contractAddress, destinationChainSelector, token } = useMemo(() => {
-    switch (destinationChain) {
+    switch (sourceChain) { // Use sourceChain here instead of destinationChain
       case 'ethereum':
         return {
-          chainToUse: ethereum,
-          contractAddress: '0x689688cA66D3357Ab096E205Ea9C8B094366890d',
+          chainToUse: sepolia,
+          contractAddress: '0x0f4C966e4Da1f305C0E1078A0bF90caCc9703002',
           destinationChainSelector: '16015286601757825753',
           token: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238'
         };
@@ -49,19 +55,20 @@ export default function Trade() {
       case 'avalanche':
         return {
           chainToUse: avalancheFuji,
-          contractAddress: '0x67E93C4b89Dd330d7b8B9f6D455210AEA5605CE1',
-          destinationChainSelector: '14767482510784806043',
+          contractAddress: '0x58789ffd83d61753edA4706C57A67Dc8112d32b3',
+          destinationChainSelector: '16015286601757825753',
           token: '0x5425890298aed601595a70AB815c96711a31Bc65'
         };
       default:
         return {
-          chainToUse: ethereum,
-          contractAddress: '0x689688cA66D3357Ab096E205Ea9C8B094366890d',
+          chainToUse: sepolia,
+          contractAddress: '0x0f4C966e4Da1f305C0E1078A0bF90caCc9703002',
           destinationChainSelector: '16015286601757825753',
           token: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238'
         };
     }
-  }, [destinationChain]);
+  }, [sourceChain]); // Depend on sourceChain
+  
 
   useEffect(() => {
     setFormData(fData => ({
@@ -85,6 +92,12 @@ export default function Trade() {
         <div className="w-full md:w-1/2 px-4 mb-8 md:mb-0">
           <h2 className="text-2xl font-bold mb-4">Transaction Builder</h2>
           <form className="space-y-4">
+            <div>
+              <label htmlFor="sourceChain" className="block mb-1">Source Chain</label>
+              <ChainSelector value={sourceChain} onChange={setSourceChain} />
+              {errors.sourceChain && <p className="text-red-500">{errors.sourceChain.message}</p>}
+            </div>
+
             <div>
               <label htmlFor="destinationChainSelector" className="block mb-1">Destination Chain Selector</label>
               <ChainSelector value={destinationChain} onChange={setDestinationChain} />
@@ -140,19 +153,24 @@ export default function Trade() {
                     BigInt(destinationChainSelector),
                     formData.receiver,
                     formData.token,
-                    formData.amount ? toWei(formData.amount) : toWei('0.01') // Use form data or default
+                    BigInt(10000) // temporarily set to 0.01 USDC for testing
                   ]
                 });
                 return tx;
               }}
               onTransactionSent={(result) => {
                 console.log("Transaction submitted", result);
+                setTransactionStatus('executing');
               }}
               onTransactionConfirmed={(receipt) => {
                 console.log("Transaction confirmed", receipt);
+                setTransactionStatus('success');
+                setTransactionData(receipt);
               }}
               onError={(error) => {
                 console.error("Transaction error", error);
+                setTransactionStatus('error');
+                setTransactionError(error.message);
               }}
             >
               Execute Transaction
@@ -162,12 +180,29 @@ export default function Trade() {
 
         <div className="w-full md:w-1/2 px-4">
           <h2 className="text-2xl font-bold mb-4">Transaction Details</h2>
-          {formData ? (
-            <pre className="bg-gray-800 p-4 rounded">
-              {JSON.stringify(formData, null, 2)}
-            </pre>
-          ) : (
+          {transactionStatus === 'idle' && (
             <p>No transaction submitted yet.</p>
+          )}
+          {transactionStatus === 'executing' && (
+            <p>Executing transaction...</p>
+          )}
+          {transactionStatus === 'success' && transactionData && (
+            <div>
+              <p className="text-green-500">Transaction Successful!</p>
+              <pre className="bg-gray-800 p-4 rounded">
+                Transaction Hash: <a href={`https://ccip.chain.link/msg/${transactionData.transactionHash}`} target="_blank" rel="noopener noreferrer">
+                  {transactionData.transactionHash}
+                </a>
+                {'\n'}From: {transactionData.from}
+                {'\n'}To: {transactionData.to}
+              </pre>
+            </div>
+          )}
+          {transactionStatus === 'error' && (
+            <div>
+              <p className="text-red-500">Transaction Failed:</p>
+              <pre className="bg-gray-800 p-4 rounded">{transactionError}</pre>
+            </div>
           )}
         </div>
       </div>
