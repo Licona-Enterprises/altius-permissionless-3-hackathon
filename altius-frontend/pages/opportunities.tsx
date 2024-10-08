@@ -13,7 +13,7 @@ type Opportunity = {
 
 export default function Opportunities() {
 
-  const ethFetchOpportunities = async () => {
+  const evmFetchOpportunities = async () => {
     try {
       // Fetch Ethereum, Avalanche, and Arbitrum opportunities concurrently
       const [ethResponse, avaxResponse, arbResponse] = await Promise.all([
@@ -21,8 +21,6 @@ export default function Opportunities() {
         avaxClient.query(aave_rate_query, { underlyingAsset: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E' }).toPromise(),
         arbitrumClient.query(aave_rate_query, { underlyingAsset: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' }).toPromise(),
       ]);
-
-      console.log("Responses received:", { ethResponse, avaxResponse, arbResponse });
   
       // Process Ethereum opportunities
       const ethFetchedOpportunities = ethResponse.data.reserves.map((reserve: any) => ({
@@ -54,7 +52,6 @@ export default function Opportunities() {
   
       // Update state with the fetched opportunities
       ethSetOpportunities(allFetchedOpportunities);
-      console.log(allFetchedOpportunities);
     } catch (error) {
       console.error('Error fetching opportunities:', error);
     }
@@ -64,9 +61,9 @@ export default function Opportunities() {
 
   useEffect(() => {
 
-    ethFetchOpportunities();
+    evmFetchOpportunities();
     const ethInterval = setInterval(() => {
-      ethFetchOpportunities();
+      evmFetchOpportunities();
     }, 48 * 60 * 1000); // 48 minutes in milliseconds
 
     return () => clearInterval(ethInterval); 
