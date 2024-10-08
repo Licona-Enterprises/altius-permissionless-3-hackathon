@@ -6,15 +6,28 @@ import { avalanche, arbitrum, ethereum, sepolia, bsc, polygon, avalancheFuji } f
 import { createThirdwebClient, prepareContractCall } from "thirdweb";
 import ChainSelector from '../components/ChainSelector';
 import TokenSelector from '../components/TokenSelector';
-import { aave_rate_query, ethClient } from '../app/theGraphClients';
+import { aave_rate_query, ethClient, avaxClient, arbitrumClient } from '../app/theGraphClients';
 import Image from 'next/image';
 
-interface Opportunity {
-  name: string;
-  underlyingAsset: string;
+
+interface Reserve {
   liquidityRate: number;
-  variableBorrowRate: number;
+  // Add other fields as necessary based on the structure of the data returned
 }
+
+
+// interface Opportunity {
+//   name: string;
+//   underlyingAsset: string;
+//   liquidityRate: number;
+//   variableBorrowRate: number;
+// }
+
+type Opportunity = {
+  chain: string;
+  apy: number;
+  strategy: string;
+};
 
 interface DataResponse {
   reserves: Opportunity[];
@@ -77,8 +90,9 @@ export default function Opportunities() {
   const [selectedToken, setSelectedToken] = useState('');
 
   const [transactionStatus, setTransactionStatus] = useState('idle');
-  const [transactionData, setTransactionData] = useState(null);
-  const [transactionError, setTransactionError] = useState(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [transactionData, setTransactionData] = useState<any>(null);
+  const [transactionError, setTransactionError] = useState<string>('');
 
   const { chainToUse, contractAddress, destinationChainSelector, token } = useMemo(() => {
     switch (sourceChain) { // Use sourceChain here instead of destinationChain
@@ -128,14 +142,65 @@ export default function Opportunities() {
     }
   };
 
-  const fetchOpportunities = async () => {
-    const response = await ethClient.query(aave_rate_query, { underlyingAsset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' }).toPromise();
-    console.log('Opportunities:', response.data);
+  const evmFetchOpportunities = async () => {
+    try {
+      // Fetch Ethereum, Avalanche, and Arbitrum opportunities concurrently
+      const [ethResponse, avaxResponse, arbResponse] = await Promise.all([
+        ethClient.query(aave_rate_query, { underlyingAsset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' }).toPromise(),
+        avaxClient.query(aave_rate_query, { underlyingAsset: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E' }).toPromise(),
+        arbitrumClient.query(aave_rate_query, { underlyingAsset: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' }).toPromise(),
+      ]);
+  
+      // Process Ethereum opportunities
+      const ethFetchedOpportunities = ethResponse.data.reserves.map((reserve: Reserve) => ({
+        chain: 'Ethereum Sepolia',
+        apy: Math.round((reserve.liquidityRate / 10**25) * 100) / 100,
+        strategy: 'USDC Lending',
+        Icon: PolygonIcon
+      }));
+  
+      // Process Avalanche opportunities
+      const avaxFetchedOpportunities = avaxResponse.data.reserves.map((reserve: Reserve) => ({
+        chain: 'Avalanche Fuji',
+        apy: Math.round((reserve.liquidityRate / 10**25) * 100) / 100,
+        strategy: 'USDC Lending',
+        Icon: PolygonIcon
+      }));
+  
+      // Process Arbitrum opportunities
+      const arbFetchedOpportunities = arbResponse.data.reserves.map((reserve: Reserve) => ({
+        chain: 'Arbitrum',
+        apy: Math.round((reserve.liquidityRate / 10**25) * 100) / 100,
+        strategy: 'USDC Lending',
+        Icon: PolygonIcon
+      }));
+  
+      // Combine all opportunities into one array
+      const allFetchedOpportunities: Opportunity[] = [
+        ...ethFetchedOpportunities,
+        ...avaxFetchedOpportunities,
+        ...arbFetchedOpportunities,
+      ];
+  
+      // Update state with the fetched opportunities
+      ethSetOpportunities(allFetchedOpportunities);
+    } catch (error) {
+      console.error('Error fetching opportunities:', error);
+    }
   };
+  
+  const [opportunities, ethSetOpportunities] = React.useState<Opportunity[]>([]);
 
   useEffect(() => {
-    fetchOpportunities();
+
+    evmFetchOpportunities();
+    const ethInterval = setInterval(() => {
+      evmFetchOpportunities();
+    }, 48 * 60 * 1000); // 48 minutes in milliseconds
+
+    return () => clearInterval(ethInterval); 
   }, []);
+
 
   return (
     <div className="container mx-auto mt-8 p-4">
@@ -143,7 +208,7 @@ export default function Opportunities() {
         {/* Left half - Cross-Chain Opportunities */}
         <div className="w-1/2 pr-4">
           <h2 className="text-2xl font-bold mb-4">Cross-Chain Opportunities</h2>
-          {mockOpportunities.map((opportunity, index) => (
+          {opportunities.map((opportunity, index) => (
             <div key={index} className="bg-gray-700 p-4 rounded-lg mb-4">
               <div className="flex justify-between items-center mb-2">
                 <span className="font-bold flex items-center">
@@ -234,11 +299,11 @@ export default function Opportunities() {
                 setTransactionStatus('success');
                 setTransactionData(receipt);
               }}
-              onError={(error) => {
-                console.error("Transaction error", error);
-                setTransactionStatus('error');
-                setTransactionError(error.message);
-              }}
+              // onError={(error: Error) => {
+              //   console.error("Transaction error", error);
+              //   setTransactionStatus('error');
+              //   setTransactionError(error.message);
+              // }}
             >
               Execute Transaction
             </TransactionButton>

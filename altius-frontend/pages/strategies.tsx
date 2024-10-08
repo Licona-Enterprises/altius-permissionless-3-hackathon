@@ -1,37 +1,135 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { TransactionButton } from "thirdweb/react";
 import { getContract } from "thirdweb";
 import { avalancheFuji, sepolia } from "thirdweb/chains";
 import { createThirdwebClient, prepareContractCall } from "thirdweb";
+import { aave_rate_query, ethClient, avaxClient, arbitrumClient } from '../app/theGraphClients';
+
+
+interface Reserve {
+  liquidityRate: number;
+  // Add other fields as necessary based on the structure of the data returned
+}
 
 const mockStrategies = [
   { name: 'Stable Yield', apy: 5.5, risk: 'Low' },
   { name: 'Balanced Growth', apy: 8.2, risk: 'Medium' },
   { name: 'High Yield', apy: 12.5, risk: 'High' },
-];
+]
 
 const thirdwebClient = createThirdwebClient({
   clientId: process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID || ''
 });
 
+type Opportunity = {
+  chain: string;
+  apy: number;
+  strategy: string;
+};
+
 export default function Strategies() {
+
+  const evmFetchOpportunities = async () => {
+    try {
+      // Fetch Ethereum, Avalanche, and Arbitrum opportunities concurrently
+      const [ethResponse, avaxResponse, arbResponse] = await Promise.all([
+        ethClient.query(aave_rate_query, { underlyingAsset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' }).toPromise(),
+        avaxClient.query(aave_rate_query, { underlyingAsset: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E' }).toPromise(),
+        arbitrumClient.query(aave_rate_query, { underlyingAsset: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' }).toPromise(),
+      ]);
+  
+      // Process Ethereum opportunities
+      const ethFetchedOpportunities = ethResponse.data.reserves.map((reserve: Reserve) => ({
+        chain: '16015286601757825753',
+        apy: Math.round((reserve.liquidityRate / 10 ** 25) * 100) / 100,
+        strategy: 'Latter Day Lending',
+      }));
+  
+      // Process Avalanche opportunities
+      const avaxFetchedOpportunities = avaxResponse.data.reserves.map((reserve: Reserve) => ({
+        chain: '14767482510784806043',
+        apy: Math.round((reserve.liquidityRate / 10 ** 25) * 100) / 100,
+        strategy: 'Latter Day Lending',
+      }));
+  
+      // Process Arbitrum opportunities
+      const arbFetchedOpportunities = arbResponse.data.reserves.map((reserve: Reserve) => ({
+        chain: '3478487238524512106',
+        apy: Math.round((reserve.liquidityRate / 10 ** 25) * 100) / 100,
+        strategy: 'Latter Day Lending',
+      }));
+  
+      // Combine all opportunities into one array
+      const allFetchedOpportunities: Opportunity[] = [
+        ...ethFetchedOpportunities,
+        ...avaxFetchedOpportunities,
+        ...arbFetchedOpportunities,
+      ];
+  
+      // Find the opportunity with the highest APY
+      const highestApyOpportunity = allFetchedOpportunities.reduce((max, current) =>
+        current.apy > max.apy ? current : max
+      , allFetchedOpportunities[0]);
+  
+      console.log('Opportunity with the highest APY:', highestApyOpportunity);
+  
+      // Create a new array with only the chain, apy, and strategy of the highest APY opportunity
+      const highestApyData = {
+        chain: highestApyOpportunity.chain,
+        apy: highestApyOpportunity.apy,
+        strategy: highestApyOpportunity.strategy,
+      };
+  
+      // Append the highest APY opportunity to the array
+      const allFetchedOpportunitiesWithHighest: Opportunity[] = [
+        highestApyData,  // Add only chain, apy, and strategy
+      ];
+  
+      // Update state with the fetched opportunities including the highest APY data
+      evmSetOpportunities(allFetchedOpportunitiesWithHighest);
+      console.log(allFetchedOpportunitiesWithHighest);
+    } catch (error) {
+      console.error('Error fetching opportunities:', error);
+    }
+  };
+
+  const [opportunities, evmSetOpportunities] = React.useState<Opportunity[]>([]);
+
+  
+  useEffect(() => {
+
+    evmFetchOpportunities();
+    const ethInterval = setInterval(() => {
+      evmFetchOpportunities();
+    }, 30 * 60 * 1000); // 48 minutes in milliseconds
+
+    return () => clearInterval(ethInterval); 
+  }, []);
+
   const [transactionStatus, setTransactionStatus] = useState('idle');
-  const [firstTransactionData, setFirstTransactionData] = useState(null);
-  const [secondTransactionData, setSecondTransactionData] = useState(null);
-  const [transactionError, setTransactionError] = useState(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [firstTransactionData, setFirstTransactionData] = useState<any>(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [secondTransactionData, setSecondTransactionData] = useState<any>(null);
+  const [transactionError, setTransactionError] = useState<string>('');
 
   return (
     <div className="container mx-auto mt-8 p-4 flex">
+
+      {/* */}
+
+
       {/* Strategy Recommendations */}
       <div className="w-1/2 pr-4">
         <h2 className="text-2xl font-bold mb-4">Strategy Recommendations</h2>
-        {mockStrategies.map((strategy, index) => (
+        {opportunities.map((opportunity, index) => (
           <div key={index} className="bg-gray-700 p-4 rounded-lg mb-4">
             <div className="flex justify-between items-center mb-1">
-              <span className="font-bold">{strategy.name}</span>
-              <span className="text-green-400 font-bold">{strategy.apy}% APY</span>
+              <span className="font-bold">{opportunity.strategy}</span>
+              <span className="text-green-400 font-bold">{opportunity.apy}% APY</span>
             </div>
-            <div className="text-sm text-gray-400 mb-3">Risk: {strategy.risk}</div>
+            <div className="text-sm text-gray-400 mb-3">Current Strategy ID: {opportunity.chain}</div>
             <TransactionButton
               transaction={() => {
                 const tx = prepareContractCall({

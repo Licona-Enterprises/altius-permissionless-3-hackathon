@@ -7,7 +7,7 @@ export function AltiusFrontendComponent() {
   const aboutSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
+    const canvas = canvasRef.current || null;
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
@@ -28,8 +28,8 @@ export function AltiusFrontendComponent() {
       hue: number;
 
       constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
+        this.x = Math.random() * (canvas?.width ?? 800);
+        this.y = Math.random() * (canvas?.height ?? 800);
         this.radius = Math.random() * 200 + 100;
         this.xSpeed = Math.random() * 3 - 1.5; // Increased speed range
         this.ySpeed = Math.random() * 3 - 1.5; // Increased speed range
@@ -40,20 +40,26 @@ export function AltiusFrontendComponent() {
         this.x += this.xSpeed;
         this.y += this.ySpeed;
 
-        if (this.x < -this.radius) this.x = canvas.width + this.radius;
-        if (this.x > canvas.width + this.radius) this.x = -this.radius;
-        if (this.y < -this.radius) this.y = canvas.height + this.radius;
-        if (this.y > canvas.height + this.radius) this.y = -this.radius;
+        if (this.x < -this.radius) this.x = (canvas?.width ?? 800) + this.radius;
+        if (this.x > (canvas?.width ?? 800) + this.radius) this.x = -this.radius;
+        if (this.y < -this.radius) this.y = (canvas?.height ?? 800) + this.radius;
+        if (this.y > (canvas?.height ?? 800) + this.radius) this.y = -this.radius;
       }
 
       draw() {
-        ctx.beginPath();
-        const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
-        gradient.addColorStop(0, `hsla(${this.hue}, 100%, 50%, 0.4)`); // Increased opacity
-        gradient.addColorStop(1, `hsla(${this.hue}, 100%, 50%, 0)`);
-        ctx.fillStyle = gradient;
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
+        ctx?.beginPath();
+        const gradient = ctx?.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius) ?? ctx?.createRadialGradient(0, 0, 0, 0, 0, 0);
+        if (gradient) {
+          gradient.addColorStop(0, `hsla(${this.hue}, 100%, 50%, 0.4)`); // Increased opacity
+          gradient.addColorStop(1, `hsla(${this.hue}, 100%, 50%, 0)`);
+        }
+        if (ctx && gradient) {
+          ctx.fillStyle = gradient;
+        }
+        if (ctx) {
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
     }
 
@@ -62,7 +68,7 @@ export function AltiusFrontendComponent() {
     }
 
     function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx?.clearRect(0, 0, (canvas?.width ?? 800), (canvas?.height ?? 800)) ?? ctx?.clearRect(0, 0, 800, 800);
       for (const blob of blobs) {
         blob.update();
         blob.draw();

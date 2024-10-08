@@ -22,11 +22,11 @@ export const ethClient = createClient({
 });
 
 export const avaxClient = createClient({
-  url: 'https://gateway.thegraph.com/api/5fef2a1fbe41263bf76e8555468ce9ed/subgraphs/id/YOUR_AVAX_SUBGRAPH_ID',
+  url: 'https://gateway.thegraph.com/api/5fef2a1fbe41263bf76e8555468ce9ed/subgraphs/id/2h9woxy8RTjHu1HJsCEnmzpPHFArU33avmUh4f71JpVn',
   exchanges: [cacheExchange, fetchExchange],
 });
 
 export const arbitrumClient = createClient({
-  url: 'https://gateway.thegraph.com/api/5fef2a1fbe41263bf76e8555468ce9ed/subgraphs/id/YOUR_ARBITRUM_SUBGRAPH_ID',
+  url: 'https://gateway.thegraph.com/api/5fef2a1fbe41263bf76e8555468ce9ed/subgraphs/id/DLuE98kEb5pQNXAcKFQGQgfSQ57Xdou4jnVbAEqMfy3B',
   exchanges: [cacheExchange, fetchExchange],
 });
