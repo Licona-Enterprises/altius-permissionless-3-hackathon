@@ -46,36 +46,40 @@ type TradeFormData = {
 };
 
 // Define SVG components for each chain
-const PolygonIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 38 33" width="24" height="24" fill="none">
-    <path d="M29 10.2a2.8 2.8 0 0 0-2.82 0l-5.71 3.3-3.88 2.23-5.71 3.3a2.8 2.8 0 0 1-2.82 0l-4.47-2.6a2.87 2.87 0 0 1-1.41-2.46V9.03c0-1.02.54-1.96 1.41-2.46l4.4-2.53a2.8 2.8 0 0 1 2.82 0l4.4 2.53A2.87 2.87 0 0 1 16.7 9v5.24l3.88-2.24V6.77c0-1.02-.54-1.96-1.41-2.46l-8.2-4.76a2.8 2.8 0 0 0-2.82 0L0 4.31A2.87 2.87 0 0 0 0 8.93v9.44c0 1.02.54 1.96 1.41 2.46l8.2 4.76a2.8 2.8 0 0 0 2.82 0l5.71-3.3 3.88-2.23 5.71-3.3a2.8 2.8 0 0 1 2.82 0l4.4 2.53c.88.5 1.41 1.44 1.41 2.46v4.94c0 1.02-.54 1.96-1.41 2.46l-4.4 2.53a2.8 2.8 0 0 1-2.82 0l-4.4-2.53a2.87 2.87 0 0 1-1.41-2.46v-5.24l-3.88 2.24v5.24c0 1.02.54 1.96 1.41 2.46l8.28 4.76a2.8 2.8 0 0 0 2.82 0L38 28.69c.88-.5 1.41-1.44 1.41-2.46v-9.44c0-1.02-.54-1.96-1.41-2.46l-8.28-4.76z" fill="#8247E5"/>
+const EthereumIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24">
+    <g fill="none" fillRule="evenodd">
+      <circle cx="16" cy="16" r="16" fill="#627EEA"/>
+      <g fill="#FFF" fillRule="nonzero">
+        <path fillOpacity=".602" d="M16.498 4v8.87l7.497 3.35z"/>
+        <path d="M16.498 4L9 16.22l7.498-3.35z"/>
+        <path fillOpacity=".602" d="M16.498 21.968v6.027L24 17.616z"/>
+        <path d="M16.498 27.995v-6.028L9 17.616z"/>
+        <path fillOpacity=".2" d="M16.498 20.573l7.497-4.353-7.497-3.348z"/>
+        <path fillOpacity=".602" d="M9 16.22l7.498 4.353v-7.701z"/>
+      </g>
+    </g>
   </svg>
 );
 
-const SolanaIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 397.7 311.7" width="24" height="24" fill="none">
-    <path d="M64.6 237.9c2.4-2.4 5.7-3.8 9.2-3.8h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1l62.7-62.7z" fill="#00FFA3"/>
-    <path d="M64.6 3.8C67.1 1.4 70.4 0 73.8 0h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1L64.6 3.8z" fill="#00FFA3"/>
-    <path d="M333.1 120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8 0-8.7 7-4.6 11.1l62.7 62.7c2.4 2.4 5.7 3.8 9.2 3.8h317.4c5.8 0 8.7-7 4.6-11.1l-62.7-62.7z" fill="#00FFA3"/>
+const AvalancheIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 1503 1504" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="287" y="258" width="928" height="844" fill="white"/>
+    <path d="M714.163 345.75H583.327L362.023 784.224H510.915L714.163 345.75Z" fill="#E84142"/>
+    <path d="M1140.52 784.224L1010.91 544.143L925.87 784.224H1140.52Z" fill="#E84142"/>
+    <path d="M714.163 345.75L925.87 784.224H510.915L714.163 345.75Z" fill="#E84142"/>
+    <path d="M362.023 784.224L583.327 1222.7H714.163L510.915 784.224H362.023Z" fill="#E84142"/>
+    <path d="M925.87 784.224H1140.52L919.218 1222.7H788.381L925.87 784.224Z" fill="#E84142"/>
+    <path d="M788.381 1222.7H919.218L1140.52 784.224H925.87L788.381 1222.7Z" fill="#E84142"/>
   </svg>
 );
 
-const FantomIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24" fill="none">
-    <path d="M16 32C24.8366 32 32 24.8366 32 16C32 7.16344 24.8366 0 16 0C7.16344 0 0 7.16344 0 16C0 24.8366 7.16344 32 16 32Z" fill="#13B5EC"/>
-    <path d="M17.2 12.9L19.8 11.4V13.7L17.2 12.9Z" fill="white"/>
-    <path d="M19.8 22.7L16 24.7L12.2 22.7V19.4L16 21.4L19.8 19.4V22.7Z" fill="white"/>
-    <path d="M16 20.7L19.8 18.7V15.4L17.2 16.9V15.4L16 16.1L12.2 14.1V17.4L16 19.4V20.7Z" fill="white"/>
-    <path d="M12.2 11.4L16 9.4L19.8 11.4L16 13.4L12.2 11.4Z" fill="white"/>
-    <path d="M14.8 12.9L12.2 11.4V13.7L14.8 12.9Z" fill="white"/>
+const ArbitrumIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 24C18.6274 24 24 18.6274 24 12C24 5.37258 18.6274 0 12 0C5.37258 0 0 5.37258 0 12C0 18.6274 5.37258 24 12 24Z" fill="#2D374B"/>
+    <path d="M16.4609 15.0937L12.1981 6.89058C12.0638 6.62116 11.7638 6.62116 11.6294 6.89058L7.36663 15.0937C7.25288 15.3235 7.41913 15.5906 7.67413 15.5906H9.84538C9.98288 15.5906 10.1079 15.5203 10.1711 15.4031L12.0056 11.7844C12.0688 11.6672 12.2719 11.6672 12.3352 11.7844L14.1697 15.4031C14.2329 15.5203 14.3579 15.5906 14.4954 15.5906H16.1534C16.4084 15.5906 16.5747 15.3235 16.4609 15.0937Z" fill="white"/>
   </svg>
 );
-
-const mockOpportunities = [
-  { chain: 'Polygon', apy: 7.2, strategy: 'Liquidity Provision', Icon: PolygonIcon },
-  { chain: 'Solana', apy: 8.5, strategy: 'Yield Farming', Icon: SolanaIcon },
-  { chain: 'Fantom', apy: 9.1, strategy: 'Staking', Icon: FantomIcon },
-]
 
 export default function Opportunities() {
   const { register, handleSubmit, formState: { errors } } = useForm<TradeFormData>();
@@ -157,7 +161,7 @@ export default function Opportunities() {
         chain: 'Ethereum Sepolia',
         apy: Math.round((reserve.liquidityRate / 10**25) * 100) / 100,
         strategy: 'USDC Lending',
-        Icon: PolygonIcon
+        Icon: EthereumIcon
       }));
   
       // Process Avalanche opportunities
@@ -165,7 +169,7 @@ export default function Opportunities() {
         chain: 'Avalanche Fuji',
         apy: Math.round((reserve.liquidityRate / 10**25) * 100) / 100,
         strategy: 'USDC Lending',
-        Icon: PolygonIcon
+        Icon: AvalancheIcon
       }));
   
       // Process Arbitrum opportunities
@@ -173,7 +177,7 @@ export default function Opportunities() {
         chain: 'Arbitrum',
         apy: Math.round((reserve.liquidityRate / 10**25) * 100) / 100,
         strategy: 'USDC Lending',
-        Icon: PolygonIcon
+        Icon: ArbitrumIcon
       }));
   
       // Combine all opportunities into one array
@@ -208,7 +212,7 @@ export default function Opportunities() {
       <div className="flex mb-8">
         {/* Left half - Cross-Chain Opportunities */}
         <div className="w-1/2 pr-4">
-          <h2 className="text-2xl font-bold mb-4">Cross-Chain Opportunities</h2>
+          <h2 className="text-2xl font-bold mb-4 text-blue-300">Cross-Chain Opportunities</h2>
           {opportunities.map((opportunity, index) => (
             <div key={index} className="bg-gray-700 p-4 rounded-lg mb-4">
               <div className="flex justify-between items-center mb-2">
@@ -228,7 +232,7 @@ export default function Opportunities() {
 
         {/* Right half - Transaction Builder */}
         <div className="w-1/2 pl-4">
-          <h2 className="text-2xl font-bold mb-4">Transaction Builder</h2>
+          <h2 className="text-2xl font-bold mb-4 text-blue-300">Transaction Builder</h2>
           <form className="space-y-4">
             <div>
               <label htmlFor="sourceChain" className="block mb-1">Source Chain</label>
@@ -300,11 +304,11 @@ export default function Opportunities() {
                 setTransactionStatus('success');
                 setTransactionData(receipt);
               }}
-              // onError={(error: Error) => {
-              //   console.error("Transaction error", error);
-              //   setTransactionStatus('error');
-              //   setTransactionError(error.message);
-              // }}
+              onError={(error: Error) => {
+                console.error("Transaction error", error);
+                setTransactionStatus('error');
+                setTransactionError(error.message);
+              }}
             >
               Execute Transaction
             </TransactionButton>
@@ -314,7 +318,7 @@ export default function Opportunities() {
 
       {/* Transaction Details - Full Width */}
       <div className="w-full mt-8">
-        <h2 className="text-2xl font-bold mb-4">Transaction Details</h2>
+        <h2 className="text-2xl font-bold mb-4 text-blue-300">Transaction Details</h2>
         {transactionStatus === 'idle' && (
           <p>No transaction submitted yet.</p>
         )}
@@ -324,13 +328,16 @@ export default function Opportunities() {
         {transactionStatus === 'success' && transactionData && (
           <div>
             <p className="text-green-500">Transaction Successful!</p>
-            <pre className="bg-gray-800 p-4 rounded">
-              Transaction Hash: <a href={`https://ccip.chain.link/msg/${transactionData.transactionHash}`} target="_blank" rel="noopener noreferrer">
-                {transactionData.transactionHash}
-              </a>
+            <pre className="bg-gray-800 p-4 rounded text-sm mb-4">
+              Transaction Hash: {transactionData.transactionHash.length > 39
+                                  ? `${transactionData.transactionHash.slice(0, 39)}...`
+                                  : transactionData.transactionHash}
               {'\n'}From: {transactionData.from}
               {'\n'}To: {transactionData.to}
             </pre>
+            <a href={`https://ccip.chain.link/tx/${transactionData.transactionHash}`} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">
+              View transaction on CCIP Explorer
+            </a>
           </div>
         )}
         {transactionStatus === 'error' && (
