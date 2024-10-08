@@ -304,11 +304,11 @@ export default function Opportunities() {
                 setTransactionStatus('success');
                 setTransactionData(receipt);
               }}
-              // onError={(error: Error) => {
-              //   console.error("Transaction error", error);
-              //   setTransactionStatus('error');
-              //   setTransactionError(error.message);
-              // }}
+              onError={(error: Error) => {
+                console.error("Transaction error", error);
+                setTransactionStatus('error');
+                setTransactionError(error.message);
+              }}
             >
               Execute Transaction
             </TransactionButton>
