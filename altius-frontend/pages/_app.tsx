@@ -11,7 +11,11 @@ import {
   // Settings, 
   Sliders 
 } from 'lucide-react'
+import { Provider } from 'urql';
+import { ethClient, avaxClient, arbitrumClient } from '../app/theGraphClients';
 import Link from 'next/link'
+import Opportunities from './opportunities';
+
 
 export default function MyApp({ Component, pageProps }: AppProps) {
 
@@ -28,42 +32,49 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 
 
   return (
+
     <div className="min-h-screen bg-gray-900 text-white">
-      {/* Global Header */}
-      <nav className="bg-gray-800 p-4">
-      <div className="container mx-auto flex justify-between items-center">
-        <div className="flex space-x-4">
-          {navItems.map((item) => (
-            <Link href={item.href} key={item.name} passHref>
-              <button
-                className={`flex items-center space-x-2 ${
-                  activeSection === item.name.toLowerCase() ? 'text-blue-400' : 'text-gray-300 hover:text-white'
-                }`}
-                onClick={() => setActiveSection(item.name.toLowerCase())}
-              >
-                <item.icon className="h-5 w-5" />
-                <span>{item.name}</span>
-              </button>
-            </Link>
-          ))}
+        {/* Global Header */}
+        <nav className="bg-gray-800 p-4">
+        <div className="container mx-auto flex justify-between items-center">
+          <div className="flex space-x-4">
+            {navItems.map((item) => (
+              <Link href={item.href} key={item.name} passHref>
+                <button
+                  className={`flex items-center space-x-2 ${
+                    activeSection === item.name.toLowerCase() ? 'text-blue-400' : 'text-gray-300 hover:text-white'
+                  }`}
+                  onClick={() => setActiveSection(item.name.toLowerCase())}
+                >
+                  <item.icon className="h-5 w-5" />
+                  <span>{item.name}</span>
+                </button>
+              </Link>
+            ))}
+          </div>
+
+          <div className="relative">
+            <button className="flex items-center space-x-2 text-gray-300 hover:text-white">
+              <span>Account</span>
+              <ChevronDown className="h-4 w-4" />
+            </button>
+          </div>
         </div>
+      </nav>
 
-        <div className="relative">
-          <button className="flex items-center space-x-2 text-gray-300 hover:text-white">
-            <span>Account</span>
-            <ChevronDown className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-    </nav>
+        {/* Page content */}
+        <Component {...pageProps} />
 
-      {/* Page content */}
-      <Component {...pageProps} />
+        <Provider value={ethClient}>
+          <Opportunities {...pageProps} /> {/* Component for Ethereum */}
+        </Provider>
+        
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-center p-4 mt-12">
-        <p>&copy; 2024 Permissionless III hackathon</p>
-      </footer>
+        {/* Footer */}
+        <footer className="bg-gray-800 text-center p-4 mt-12">
+          <p>&copy; 2024 Permissionless III hackathon</p>
+        </footer>
     </div>
+
   )
 }

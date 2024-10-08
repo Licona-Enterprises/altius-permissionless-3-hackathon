@@ -1,4 +1,33 @@
-import React from 'react'
+import React, { useEffect } from 'react';
+import { useQuery } from 'urql';
+import { createClient, gql } from 'urql';
+import { useReserves } from '../app/hooks/useReservesEthereum';
+import { cacheExchange, fetchExchange } from '@urql/core';
+
+
+
+interface Opportunity {
+  name: string;
+  underlyingAsset: string;
+  liquidityRate: number;
+  variableBorrowRate: number;
+}
+
+interface DataResponse {
+  reserves: Opportunity[];
+}
+
+
+const aave_rate_query = gql`
+query GetReserves($underlyingAsset: String!) {
+        reserves(where: { underlyingAsset: $underlyingAsset }) {
+        name
+        underlyingAsset
+        liquidityRate
+        variableBorrowRate
+    }
+}
+`;
 
 const mockOpportunities = [
   { chain: 'Polygon', apy: 7.2, strategy: 'Liquidity Provision' },
@@ -7,6 +36,32 @@ const mockOpportunities = [
 ]
 
 export default function Opportunities() {
+
+  // const [{ data, error, fetching }] = useQuery({
+  //   query: aave_rate_query,
+  // });
+
+  const ethClient = createClient({
+    url: 'https://gateway.thegraph.com/api/5fef2a1fbe41263bf76e8555468ce9ed/subgraphs/id/Cd2gEDVeqnjBn1hSeqFMitw8Q1iiyV9FYUZkLNRcL87g',
+    exchanges: [cacheExchange, fetchExchange],
+  });
+
+  const fetchOpportunities = async () => {
+    const response = await ethClient.query(aave_rate_query, { underlyingAsset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' }).toPromise();
+    console.log('Opportunities:', response.data);
+  };
+
+  useEffect(() => {
+    fetchOpportunities();
+  }, []);
+
+  // Log the fetching status, data, and errors
+  // React.useEffect(() => {
+  //   console.log('Fetching:', fetching);
+  //   console.log('Data:', data);
+  //   console.log('Error:', error);
+  // }, [data, error, fetching]);
+
   return (
     <div className="container mx-auto mt-8 p-4">
       <h2 className="text-2xl font-bold mb-4">Cross-Chain Opportunities</h2>
@@ -24,4 +79,5 @@ export default function Opportunities() {
       ))}
     </div>
   )
+
 }

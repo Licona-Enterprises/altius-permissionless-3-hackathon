@@ -6,7 +6,7 @@ This section contains the addresses where the TokenTransferor_v1 contract is dep
 |------------|------------------------------------------------------|---------------------------------------------------|
 | Ethereum Sepolia   | `0x689688cA66D3357Ab096E205Ea9C8B094366890d`                      | [View on Etherscan](https://sepolia.etherscan.io/address/0x689688cA66D3357Ab096E205Ea9C8B094366890d) |
 | Arbitrum Sepolia | `0x8ee3F523490459d2c424e7b8aD25C5CFb66FA1Ac`                   | [View on Arbscan](https://sepolia.arbiscan.io/address/0x8ee3F523490459d2c424e7b8aD25C5CFb66FA1Ac) |
-| Avalanche Fuji  | `0x67E93C4b89Dd330d7b8B9f6D455210AEA5605CE1`                     | [View on Avascan](https://testnet.avascan.info/blockchain/all/address/0x67E93C4b89Dd330d7b8B9f6D455210AEA5605CE1) |
+| Avalanche Fuji  | `0x58789ffd83d61753edA4706C57A67Dc8112d32b3`                     | [View on Avascan](https://testnet.avascan.info/blockchain/all/address/0x58789ffd83d61753edA4706C57A67Dc8112d32b3) |
 
 Here is the updated README that includes the supported assets and the updated function signature for `transferTokensPayNative`, as well as the destination chain selectors.
 
@@ -24,7 +24,7 @@ This project consists of smart contracts deployed across multiple networks to en
 
 | Network           | Contract Address                                    | Allowlisted Networks                        | Supported Assets                          |
 |-------------------|-----------------------------------------------------|---------------------------------------------|-------------------------------------------|
-| Avalanche Fuji     | `0x67E93C4b89Dd330d7b8B9f6D455210AEA5605CE1`        | Ethereum Sepolia, Arbitrum Sepolia          | USDC: `0x5425890298aed601595a70AB815c96711a31Bc65` |
+| Avalanche Fuji     | `0x58789ffd83d61753edA4706C57A67Dc8112d32b3`        | Ethereum Sepolia, Arbitrum Sepolia          | USDC: `0x5425890298aed601595a70AB815c96711a31Bc65` |
 | Ethereum Sepolia   | `0x689688cA66D3357Ab096E205Ea9C8B094366890d`        | Avalanche Fuji, Arbitrum Sepolia            | USDC: `0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238` |
 | Arbitrum Sepolia   | `0x8ee3F523490459d2c424e7b8aD25C5CFb66FA1Ac`        | Avalanche Fuji, Ethereum Sepolia            | USDC: `0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d`  |
 
