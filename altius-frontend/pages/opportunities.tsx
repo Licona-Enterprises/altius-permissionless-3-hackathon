@@ -27,7 +27,7 @@ type Opportunity = {
   chain: string;
   apy: number;
   strategy: string;
-  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  Icon: React.FC; // Add the Icon property
 };
 
 interface DataResponse {
