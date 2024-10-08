@@ -5,20 +5,24 @@ import { useReserves } from '../app/hooks/useReservesEthereum';
 import { cacheExchange, fetchExchange } from '@urql/core';
 import { aave_rate_query, ethClient } from '../app/theGraphClients';
 
+type Opportunity = {
+  chain: string;
+  apy: number;
+  strategy: string;
+};
 
+// interface Opportunity {
+//   name: string;
+//   underlyingAsset: string;
+//   liquidityRate: number;
+//   variableBorrowRate: number;
+// }
 
-interface Opportunity {
-  name: string;
-  underlyingAsset: string;
-  liquidityRate: number;
-  variableBorrowRate: number;
-}
+// interface DataResponse {
+//   reserves: Opportunity[];
+// }
 
-interface DataResponse {
-  reserves: Opportunity[];
-}
-
-const mockOpportunities = [
+const mockOpportunities: Opportunity[] =  [
   { chain: 'Polygon', apy: 7.2, strategy: 'Liquidity Provision' },
   { chain: 'Solana', apy: 8.5, strategy: 'Yield Farming' },
   { chain: 'Fantom', apy: 9.1, strategy: 'Staking' },
