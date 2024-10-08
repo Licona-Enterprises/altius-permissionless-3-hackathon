@@ -17,8 +17,8 @@ export default function ConnectWallet() {
               },
               // chains: [polygon],
             }),
-            createWallet("io.metamask", {
-            }),
+            createWallet("io.metamask"),
+            createWallet("me.rainbow")
           ]}
         />
     );
