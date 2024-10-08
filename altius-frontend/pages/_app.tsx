@@ -7,7 +7,6 @@ import { ThirdwebProvider } from "thirdweb/react";
 import ConnectWallet from '../components/ConnectWallet';
 import { Provider } from 'urql';
 import { ethClient, avaxClient, arbitrumClient } from '../app/theGraphClients';
-import Opportunities from './opportunities';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
 
@@ -17,8 +16,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         { name: 'Dashboard', icon: Home, href: '/dashboard' },
         { name: 'Opportunities', icon: Globe, href: '/opportunities' },
         { name: 'Strategies', icon: PieChart, href: '/strategies' },
-        { name: 'Analytics', icon: Sliders, href: '/analytics' },
-        { name: 'Trade', icon: DollarSign, href: '/trade' }, // Add this line
+        { name: 'Analytics', icon: Sliders, href: '/analytics' }
         // Add more navigation items as needed
     ];
 
@@ -55,7 +53,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 
                 {/* Footer */}
                 <footer className="bg-gray-800 text-center p-4 mt-12">
-                    <p>&copy; 2024 Permissionless III Hackathon</p>
+                    <p>&copy; 2024 Altius</p>
                 </footer>
             </div>
         </ThirdwebProvider>
