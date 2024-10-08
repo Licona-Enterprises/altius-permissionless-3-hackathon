@@ -1,7 +1,7 @@
 import '../styles/global.css';
 import { useState } from 'react';
 import { AppProps } from 'next/app';
-import { Home, Globe, PieChart, Sliders, DollarSign } from 'lucide-react';
+import { Home, Globe, Blend, ChartCandlestick } from 'lucide-react';
 import Link from 'next/link';
 import { ThirdwebProvider } from "thirdweb/react";
 import ConnectWallet from '../components/ConnectWallet';
@@ -15,8 +15,8 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     const navItems = [
         { name: 'Dashboard', icon: Home, href: '/dashboard' },
         { name: 'Opportunities', icon: Globe, href: '/opportunities' },
-        { name: 'Strategies', icon: PieChart, href: '/strategies' },
-        { name: 'Analytics', icon: Sliders, href: '/analytics' }
+        { name: 'Strategies', icon: Blend, href: '/strategies' },
+        { name: 'Portfolio', icon: ChartCandlestick, href: '/portfolio' }
         // Add more navigation items as needed
     ];
 
