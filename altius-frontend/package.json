@@ -9,6 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@nestjs/axios": "^3.0.3",
+    "@urql/core": "^5.0.6",
+    "graphql-request": "^7.1.0",
+    "urql": "^4.1.0",
+    
     "@chakra-ui/icons": "^2.2.4",
     "@chakra-ui/react": "^2.10.1",
     "@emotion/react": "^11.13.3",
